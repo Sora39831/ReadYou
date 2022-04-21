@@ -1,6 +1,7 @@
 package me.ash.reader.ui.page.home.read
 
 import android.view.HapticFeedbackConstants
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FiberManualRecord
@@ -39,6 +40,9 @@ fun ReadBar(
     var fullContent by remember { mutableStateOf(isFullContent) }
 
     Surface(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.surface)
+            .navigationBarsPadding(),
         tonalElevation = 0.dp,
     ) {
         Box(
@@ -53,7 +57,6 @@ fun ReadBar(
                     color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.24f)
                 )
             }
-
             Row(
                 modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.SpaceAround,
@@ -96,7 +99,7 @@ fun ReadBar(
                     starredOnClick(!isStarred)
                 }
                 CanBeDisabledIconButton(
-                    disabled = disabled,
+                    disabled = true,
                     modifier = Modifier.size(40.dp),
                     imageVector = Icons.Rounded.ExpandMore,
                     contentDescription = "Next Article",
@@ -106,7 +109,7 @@ fun ReadBar(
                 }
                 CanBeDisabledIconButton(
                     modifier = Modifier.size(40.dp),
-                    disabled = disabled,
+                    disabled = true,
                     imageVector = Icons.Outlined.TextFormat,
                     contentDescription = "Add Tag",
                     tint = MaterialTheme.colorScheme.outline,

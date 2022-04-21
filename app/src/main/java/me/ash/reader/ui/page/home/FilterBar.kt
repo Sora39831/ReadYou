@@ -11,6 +11,7 @@ import androidx.compose.ui.zIndex
 import com.google.accompanist.pager.ExperimentalPagerApi
 import me.ash.reader.data.entity.Filter
 import me.ash.reader.ui.ext.getName
+import me.ash.reader.ui.theme.palette.alwaysLight
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -54,13 +55,13 @@ fun FilterBar(
                         view.playSoundEffect(SoundEffectConstants.CLICK)
                         filterOnClick(item)
                     },
-//                    colors = NavigationBarItemDefaults.colors(
-//                        selectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer alwaysLight true,
 //                        unselectedIconColor = MaterialTheme.colorScheme.outline,
-//                        selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                        selectedTextColor = MaterialTheme.colorScheme.onSurface alwaysLight true,
 //                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-//                        indicatorColor = MaterialTheme.colorScheme.secondaryContainer,
-//                    )
+                        indicatorColor = MaterialTheme.colorScheme.primaryContainer alwaysLight true,
+                    )
                 )
             }
             Spacer(modifier = Modifier.width(60.dp))

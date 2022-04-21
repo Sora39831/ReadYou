@@ -15,6 +15,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -66,9 +67,6 @@ fun ReadPage(
             if (it.article.isUnread) {
                 readViewModel.dispatch(ReadViewAction.MarkUnread(false))
             }
-            if (it.feed.isFullContent) {
-                readViewModel.dispatch(ReadViewAction.RenderFullContent)
-            }
         }
     }
 
@@ -95,6 +93,7 @@ fun ReadPage(
                 Content(
                     content = viewState.content ?: "",
                     articleWithFeed = viewState.articleWithFeed,
+                    viewState = viewState,
                     LazyListState = viewState.listState,
                 )
                 Box(
@@ -137,6 +136,7 @@ private fun TopBar(
         exit = fadeOut() + shrinkVertically(),
     ) {
         SmallTopAppBar(
+            modifier = Modifier.statusBarsPadding(),
             colors = TopAppBarDefaults.smallTopAppBarColors(
                 containerColor = MaterialTheme.colorScheme.surface,
             ),
@@ -155,13 +155,16 @@ private fun TopBar(
             actions = {
                 if (isShowActions) {
                     FeedbackIconButton(
-                        modifier = Modifier.size(22.dp),
+                        modifier = Modifier
+                            .size(22.dp)
+                            .alpha(0.5f),
                         imageVector = Icons.Outlined.Headphones,
                         contentDescription = stringResource(R.string.mark_all_as_read),
                         tint = MaterialTheme.colorScheme.onSurface,
                     ) {
                     }
                     FeedbackIconButton(
+                        modifier = Modifier.alpha(0.5f),
                         imageVector = Icons.Outlined.MoreVert,
                         contentDescription = stringResource(R.string.search),
                         tint = MaterialTheme.colorScheme.onSurface,
@@ -177,9 +180,12 @@ private fun TopBar(
 private fun Content(
     content: String,
     articleWithFeed: ArticleWithFeed?,
+    viewState: ReadViewState,
     LazyListState: LazyListState = rememberLazyListState(),
 ) {
-    Column {
+    Column(
+        modifier = Modifier.statusBarsPadding(),
+    ) {
         if (articleWithFeed == null) {
             Spacer(modifier = Modifier.height(64.dp))
 //            LottieAnimation(
@@ -206,7 +212,27 @@ private fun Content(
                 }
                 item {
                     Spacer(modifier = Modifier.height(22.dp))
-                    Crossfade(targetState = content) { content ->
+                    AnimatedVisibility(
+                        visible = viewState.isLoading,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically(),
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Column {
+                                Spacer(modifier = Modifier.height(22.dp))
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(30.dp),
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                                Spacer(modifier = Modifier.height(22.dp))
+                            }
+                        }
+                    }
+                    if (!viewState.isLoading) {
                         WebView(
                             content = content
                         )
